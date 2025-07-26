@@ -3,20 +3,30 @@
 @model IEnumerable<ArticleIndexModel>
 @{
 	ViewData["Title"] = "Personal Blogs";
- 
+
 }
 
-<h1>Personal Blog</h1>
-<hr/>
+<div class="d-flex justify-content-between">
+	<h1>Personal Blog</h1>
+	<span>
+		<a class="btn btn-primary rounded-pill "
+		   asp-action="New"
+		   asp-controller="Admin">
+			<span class="bi bi-plus-lg"></span>
+			<span>Create New Article</span>
+		</a>
+	</span>
+</div>
+<hr />
 @if (Model != null && Model.Count() > 0)
 {
 	<ul class="list-group list-group-flush">
 		@foreach (var article in Model)
 		{
 			<a class="list-group-item list-group-item-action"
-				asp-action="Details" 
-				asp-route-id="@article.Id"
-				asp-route-slug="@article.Slug">
+			   asp-action="Details"
+			   asp-route-id="@article.Id"
+			   asp-route-slug="@article.Slug">
 				<span class="d-flex w-100 justify-content-between">
 					<h5 class="mb-1 fw-bold">
 						@article.Title
@@ -27,7 +37,7 @@
 					</small>
 				</span>
 			</a>
-		}		
+		}
 	</ul>
 }
 else

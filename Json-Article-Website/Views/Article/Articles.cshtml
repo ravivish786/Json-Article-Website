@@ -2,7 +2,7 @@
 
 @model IEnumerable<ArticleIndexModel>
 @{
-	ViewData["Title"] = "Articles";
+	ViewData["Title"] = "Personal Blogs";
 	var data = Model.ToList();
 	data.AddRange(Model.ToList());
 }
@@ -14,8 +14,10 @@
 	<ul class="list-group list-group-flush">
 		@foreach (var article in data)
 		{
-			<a asp-action="Details" asp-route-id="@article.Id" 
-			asp-route-slug="@article.Slug" class="list-group-item list-group-item-action">
+			<a class="list-group-item list-group-item-action"
+				asp-action="Details" 
+				asp-route-id="@article.Id"
+				asp-route-slug="@article.Slug">
 				<span class="d-flex w-100 justify-content-between">
 					<h5 class="mb-1 fw-bold">
 						@article.Title
@@ -25,10 +27,6 @@
 						<span>@article.CreatedDate.ToString("MMMM dd, yyyy")</span>
 					</small>
 				</span>
-				<small class="text-body-secondary">
-					<span class="bi bi-pen"></span>
-					<span>@article.Author</span>
-				</small>
 			</a>
 		}		
 	</ul>

@@ -7,12 +7,7 @@ namespace Json_Article_Website.Controllers
     {
         private readonly ILogger<ArticleController> _logger = logger;
         private readonly IArticleService _articleService = articleService;
-
-
-
-
-
-
+         
 
         [Route("articles/{id}/{slug?}")]
         public async Task<IActionResult> Details(int id, string slug )

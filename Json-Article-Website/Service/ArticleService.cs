@@ -5,9 +5,19 @@ namespace Json_Article_Website.Service
 {
     public class ArticleService : IArticleService
     {
+        
         public Task<ArticleDetailsModel> GetArticleDetailsAsync(int id )
         {
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
+            return Task.FromResult( new ArticleDetailsModel()
+            {
+                Id = id,
+                Title = "Sample Article",
+                Slug = "sample-article",
+                ImageUrl = "/images/sample.jpg",
+                Content = "This is a sample article content.",
+                CreatedDate = DateTime.UtcNow
+            });
         }
 
         public Task<IEnumerable<ArticleIndexModel>> GetArticlesAsync(int page = 1)
@@ -21,24 +31,26 @@ namespace Json_Article_Website.Service
                     Id = 1,
                     Title = "Sample Article",
                     Slug = "sample-article",
-                    PublishedDate = DateTime.UtcNow,
-                    Author = "Author Name",
-                    Category = "Category Name",
-                    Tags =
-                    [
-                        new() { Name = "Tag1" },
-                        new() { Name = "Tag2" }
-                    ],
-                    ImageUrl = "https://example.com/image.jpg",
-                    Summary = "This is a sample article summary.",
-                    IsFeatured = true,
-                    IsPublished = true,
-                    IsDeleted = false,
-                    IsModified = false,
-                    CreatedBy = "Admin",
+                     
                     CreatedDate = DateTime.UtcNow
                 }
             ]);
         }
+
+        public Task<ArticleDetailsModel> PostArticleAsync(ArticleDetailsModel article)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<ArticleDetailsModel> PutArticleAsync(int id, ArticleDetailsModel article)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> DeleteArticleAsync(int id)
+        {
+            throw new NotImplementedException();
+        }
+
     }
 }

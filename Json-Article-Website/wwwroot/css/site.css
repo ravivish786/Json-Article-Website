@@ -19,5 +19,8 @@ html {
 
 body {
   margin-bottom: 60px;
-  font-family: cursive;
+/*  font-family: cursive;*/
+}
+main a:hover h5 {
+    text-decoration: underline !important;
 }

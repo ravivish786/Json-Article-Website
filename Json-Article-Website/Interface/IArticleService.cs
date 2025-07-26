@@ -20,5 +20,10 @@ namespace Json_Article_Website.Interface
         Task<IEnumerable<ArticleIndexModel>> GetArticlesAsync(int page = 1);
 
 
+        Task<ArticleDetailsModel> PostArticleAsync(ArticleDetailsModel article);
+        Task<ArticleDetailsModel> PutArticleAsync(int id, ArticleDetailsModel article);
+        Task<bool> DeleteArticleAsync(int id);
+
+
     }
 }

@@ -1,7 +1,40 @@
-﻿
+﻿@using Json_Article_Website.Models
+
+@model IEnumerable<ArticleIndexModel>
 @{
-    ViewData["Title"] = "Articles";
+	ViewData["Title"] = "Articles";
+	var data = Model.ToList();
+	data.AddRange(Model.ToList());
 }
 
-<h1>Articles</h1>
+<h1>Personal Blog</h1>
+<hr/>
+@if (Model != null && Model.Count() > 0)
+{
+	<ul class="list-group list-group-flush">
+		@foreach (var article in data)
+		{
+			<a asp-action="Details" asp-route-id="@article.Id" 
+			asp-route-slug="@article.Slug" class="list-group-item list-group-item-action">
+				<span class="d-flex w-100 justify-content-between">
+					<h5 class="mb-1 fw-bold">
+						@article.Title
+					</h5>
+					<small class="text-body-secondary">
+						<span class="bi bi-calendar"></span>
+						<span>@article.CreatedDate.ToString("MMMM dd, yyyy")</span>
+					</small>
+				</span>
+				<small class="text-body-secondary">
+					<span class="bi bi-pen"></span>
+					<span>@article.Author</span>
+				</small>
+			</a>
+		}		
+	</ul>
+}
+else
+{
+	<p>Not found</p>
+}
 

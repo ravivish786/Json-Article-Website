@@ -1,3 +1,6 @@
+using Json_Article_Website.Interface;
+using Json_Article_Website.Service;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -8,6 +11,14 @@ builder.Services.AddRouting(options =>
     options.LowercaseUrls = true; // Optional: Makes URLs lowercase
     options.LowercaseQueryStrings = true; // Optional: Makes query strings lowercase
     options.AppendTrailingSlash = false; // Optional: Appends a trailing slash to URLs
+});
+
+builder.Services.AddScoped<IArticleService, ArticleService>();
+builder.Services.AddLogging(loggingBuilder =>
+{
+    loggingBuilder.ClearProviders();
+    loggingBuilder.AddConsole();
+    loggingBuilder.AddDebug();
 });
 
 var app = builder.Build();

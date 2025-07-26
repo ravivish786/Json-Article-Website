@@ -1,39 +1,44 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Json_Article_Website.Interface;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Json_Article_Website.Controllers
 {
-    public class ArticleController : Controller
+    public class ArticleController(IArticleService articleService, ILogger<ArticleController> logger) : Controller
     {
+        private readonly ILogger<ArticleController> _logger = logger;
+        private readonly IArticleService _articleService = articleService;
+
+
+
+
+
+
 
         [Route("articles/{id}/{slug?}")]
         public async Task<IActionResult> Details(int id, string slug )
         {
-            // Simulate fetching article details from a data source
-            var article = new
+            var article = await _articleService.GetArticleDetailsAsync(id);
+
+
+            if (article == null)
             {
-                Id = id,
-                Title = $"Article {id}",
-                Content = $"This is the content of article {id}."
-            };
+                return NotFound();
+            }
+
+            if (string.IsNullOrWhiteSpace(slug) || !slug.Equals(article.Slug, StringComparison.OrdinalIgnoreCase))
+            {
+                return RedirectToActionPermanent("Details", new { id = article.Id, slug = article.Slug });
+            }
+
             return View(article);
         }
 
         [Route("articles")]
         public async Task<IActionResult> Articles(int page = 1)
         {
-            // Simulate fetching articles from a data source
-            var articles = new List<string>
-            {
-                "Article 1",
-                "Article 2",
-                "Article 3",
-                "Article 4",
-                "Article 5"
-            };
-            // Simulate pagination
-            int pageSize = 2;
-            var paginatedArticles = articles.Skip((page - 1) * pageSize).Take(pageSize).ToList();
-            return View(paginatedArticles); 
+            var articles = await _articleService.GetArticlesAsync(page);
+             
+            return View(articles); 
         }
     }
 }

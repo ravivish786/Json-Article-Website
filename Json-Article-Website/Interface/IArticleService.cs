@@ -4,6 +4,7 @@ namespace Json_Article_Website.Interface
 {
     public interface IArticleService
     {
+         
         /// <summary>
         /// Fetches the details of an article by its ID and optional slug.
         /// </summary>

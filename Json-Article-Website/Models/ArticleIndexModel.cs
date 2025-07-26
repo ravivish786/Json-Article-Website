@@ -8,7 +8,7 @@
         public DateTime PublishedDate { get; set; }
         public string Author { get; set; } = string.Empty;
         public string Category { get; set; } = string.Empty;
-        public string Tags { get; set; } = string.Empty;
+        public List<ArticleTagModel>? Tags { get; set; } = default;
         public string ImageUrl { get; set; } = string.Empty;
         public string Summary { get; set; } = string.Empty;
         public bool IsFeatured { get; set; } = false;

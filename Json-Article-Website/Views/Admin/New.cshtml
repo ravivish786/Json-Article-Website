@@ -2,16 +2,17 @@
 
 @model ArticleDetailsModel 
 @{
-    ViewData["Title"] = Model.Id > 0 ? "Update" : "New" + " Article";
+	ViewData["Title"] = (Model.Id > 0 ? "Update" : "New") + " Article";
 }
  
 <h1>
 	@ViewData["Title"]
 </h1>
 <hr/>
-
-@using (Html.BeginForm("SaveAsync", "Admin", FormMethod.Post, new { @class = "row g-3" }))
+ 
+@using (Html.BeginForm("Save", "Admin", FormMethod.Post, new { @class = "row g-3" }))
 {
+	@Html.AntiForgeryToken()
     @Html.HiddenFor(x => x.Id)
 	 
 	@Html.ValidationSummary(true, "", new { @class = "text-danger" })
@@ -21,6 +22,7 @@
         @Html.TextBoxFor(x => x.Title, new { @class = "form-control", placeholder = "Title" })
         @Html.ValidationMessageFor(x => x.Title, "", new { @class = "text-danger" })
 	</div>
+
 	<div class="col-md-12">
 		@Html.LabelFor(x => x.CreatedDate, "Publishing Date", new { @class = "form-label fw-bold" })
 		@Html.TextBoxFor(x => x.CreatedDate, Model.CreatedDate.Date.ToString("yyyy-MM-dd"), new
@@ -30,11 +32,13 @@
 		})
 		@Html.ValidationMessageFor(x => x.CreatedDate, "", new { @class = "text-danger" })
 	</div>
+
 	<div class="col-md-12">
 		@Html.LabelFor(x => x.Content, new { @class = "form-label fw-bold" })
 		@Html.TextAreaFor(x => x.Content, new { @class = "form-control", placeholder = "Content", rows = 10 })
 		@Html.ValidationMessageFor(x => x.Content, "", new { @class = "text-danger" })
 	</div>
+
 	<div class="col-md-12">
 		<button type="submit" class="btn btn-primary rounded-pill px-4">
 			@(Model.Id > 0 ? "Update" : "Publish")

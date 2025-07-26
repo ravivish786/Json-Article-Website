@@ -23,20 +23,39 @@
 	<ul class="list-group list-group-flush">
 		@foreach (var article in Model)
 		{
-			<a class="list-group-item list-group-item-action"
-			   asp-action="Details"
-			   asp-route-id="@article.Id"
-			   asp-route-slug="@article.Slug">
-				<span class="d-flex w-100 justify-content-between">
-					<h5 class="mb-1 fw-bold">
-						@article.Title
-					</h5>
-					<small class="text-body-secondary">
-						<span class="bi bi-calendar"></span>
-						<span>@article.CreatedDate.ToString("MMMM dd, yyyy")</span>
-					</small>
+			<li class="list-group-item">
+				<a class=" link-dark text-decoration-none"
+				   asp-action="Details"
+				   asp-controller="Article"
+				   asp-route-id="@article.Id"
+				   asp-route-slug="@article.Slug">
+					<span class="d-flex w-100 justify-content-between">
+						<h5 class="mb-1 fw-bold">
+							@article.Title
+						</h5>
+						<small class="text-body-secondary">
+							<span class="bi bi-calendar"></span>
+							<span>@article.PublishedDate.ToString("MMMM dd, yyyy")</span>
+						</small>
+					</span>
+				</a>
+				<span>
+					<span class="d-flex justify-content-end gap-3">
+						<a asp-action="edit"
+						   asp-controller="Admin"
+						   asp-route-id="@article.Id"
+						   class="link-primary text-decoration-none">
+							<span>Edit</span>
+						</a>
+						<a asp-action="Delete"
+						   asp-controller="admin"
+						   asp-route-id="@article.Id"
+						   class="link-danger text-decoration-none">
+							Delete
+						</a>
+					</span>
 				</span>
-			</a>
+			</li>
 		}
 	</ul>
 }

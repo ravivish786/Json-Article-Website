@@ -1,19 +1,19 @@
-﻿using System.Web;
-using Json_Article_Website.Helper;
+﻿using Json_Article_Website.Helper;
 using Json_Article_Website.Interface;
 using Json_Article_Website.Models;
-using Microsoft.AspNetCore.Html;
+using Json_Article_Website.Service;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.VisualBasic;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace Json_Article_Website.Controllers
 {
     public class AdminController (IArticleService articleService) : Controller
     {
         [Route("admin")]
-        public IActionResult Index()
+        public async Task<IActionResult> Index(int? page = null)
         {
-            return View();
+            var articles = await articleService.GetArticlesAsync(page);
+            return View(articles);
         }
 
 
@@ -36,10 +36,20 @@ namespace Json_Article_Website.Controllers
             }
             return View("new", article);
         }
-        
+
+
+
+        [Route("delete/{id}")]
+        [HttpGet]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var article = await articleService.DeleteArticleAsync(id);
+            
+            return RedirectToActionPermanent("Index", "Admin");
+        }
 
         [HttpPost, ValidateAntiForgeryToken]
-        public async Task<IActionResult> SaveAsync(ArticleDetailsModel model)
+        public async Task<IActionResult> Save(ArticleDetailsModel model)
         {
             if (ModelState.IsValid)
             {
@@ -57,10 +67,6 @@ namespace Json_Article_Website.Controllers
             }
             return View("new", model);
         }
-
-
-
-
          
     }
 }

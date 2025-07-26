@@ -3,6 +3,7 @@ using Json_Article_Website.Helper;
 using Json_Article_Website.Interface;
 using Json_Article_Website.Models;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.VisualBasic;
 
 namespace Json_Article_Website.Service
 {
@@ -26,13 +27,16 @@ namespace Json_Article_Website.Service
             return articles;
         }
 
-        public async Task<IEnumerable<ArticleIndexModel>?> GetArticlesAsync(int page = 1)
+        public async Task<IEnumerable<ArticleIndexModel>?> GetArticlesAsync(int? _page)
         {
-             
-            if (page < 1)
+            if (_page == null)
             {
-                page = 1;
+                var response = await GetFilesMetaDataAsync();
+                _page = response.LastIndexFile;
             }
+
+            int page = _page.Value;
+
             // Simulate fetching articles from a data source
             var fullPath = fileService.GetIndexPath(page);
             var bytes = await fileService.ReadFileAsync(fullPath);
@@ -42,11 +46,15 @@ namespace Json_Article_Website.Service
                 return default;
             }
             var articles = JsonSerializer.Deserialize<IEnumerable<ArticleIndexModel>>(bytes);
-            return articles;
+            return articles?.OrderByDescending(x => x.PublishedDate);
         }
 
         public async Task<ArticleDetailsModel> PostArticleAsync(ArticleDetailsModel article)
         {
+            var metadata = await GetFilesMetaDataAsync();
+            metadata.LastArticleId += 1;
+            article.Id = metadata.LastArticleId;
+
             var filePath = fileService.GetArticlePath(article.Id);
             if (File.Exists(filePath))
             {
@@ -58,6 +66,15 @@ namespace Json_Article_Website.Service
                 throw new ArgumentException("Article cannot be empty", nameof(article));
             }
             await fileService.SaveFileAsync(filePath, bytes);
+
+            // update index of article 
+            metadata = await UpdateFilesIndex(new ArticleIndexModel
+            {
+                Id = article.Id,
+                Title = article.Title,
+                Slug = article.Slug,
+                PublishedDate = article.CreatedDate
+            }, metadata);
             return article;
         }
 
@@ -92,34 +109,45 @@ namespace Json_Article_Website.Service
 
         private string MetaDataPath => Path.Combine(fileService._appDataPath, "metadata.json");
 
-        private async Task<ArticleFileMetadata> GetFilesMetaData()
+        private async Task<ArticleFileMetadata> GetFilesMetaDataAsync()
         {
             var reponse = await fileService.ReadFileAsync(MetaDataPath);
+
             var defaultResponse = new ArticleFileMetadata { };
+
             return reponse == null
                 ? defaultResponse
                 : JsonSerializer.Deserialize<ArticleFileMetadata>(reponse) ?? defaultResponse;
         }
          
+        private async Task<ArticleFileMetadata> UpdateFilesMetadata(ArticleFileMetadata fileMetadata)
+        {
+            await fileService.SaveFileAsync(MetaDataPath, JsonSerializer.SerializeToUtf8Bytes(fileMetadata));
+            return fileMetadata;
+        }
+
         private async Task<ArticleFileMetadata> UpdateFilesIndex(ArticleIndexModel article, ArticleFileMetadata metadata)
         {
-            var _metadata = metadata ?? await GetFilesMetaData() ;
+            var _metadata = metadata ?? await GetFilesMetaDataAsync() ;
 
             _metadata.LastArticleId = article.Id;
 
-            string filePath = fileService.GetIndexPath(_metadata.LastIndexFile );
-            var bytes = await fileService.ReadFileAsync(filePath);
-            var articles = JsonSerializer.Deserialize<IList<ArticleIndexModel>>(bytes) ?? [];
+            string indexFilePath = fileService.GetIndexPath(_metadata.LastIndexFile );
+            var bytes = await fileService.ReadFileAsync(indexFilePath) ;
+            var articles = bytes == null ? [] : JsonSerializer.Deserialize<IList<ArticleIndexModel>>(bytes) ?? [];
              
             if (articles.Count >= ArticleMetaConst.MaxRowsPerIndexFile)
             {
                 _metadata.LastIndexFile +=1;
                 articles = [article];
-                filePath = fileService.GetIndexPath(_metadata.LastIndexFile);
+                indexFilePath = fileService.GetIndexPath(_metadata.LastIndexFile);
             }
-
-            await fileService.SaveFileAsync(filePath, JsonSerializer.SerializeToUtf8Bytes(articles));
-
+            else
+            {
+                articles.Add(article);
+            }
+            await fileService.SaveFileAsync(indexFilePath, JsonSerializer.SerializeToUtf8Bytes(articles));
+            await this.UpdateFilesMetadata(_metadata);
             return _metadata;
         }
 

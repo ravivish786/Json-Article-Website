@@ -29,7 +29,7 @@ namespace Json_Article_Website.Controllers
         }
 
         [Route("articles")]
-        public async Task<IActionResult> Articles(int page = 1)
+        public async Task<IActionResult> Articles(int? page = null)
         {
             var articles = await _articleService.GetArticlesAsync(page);
              

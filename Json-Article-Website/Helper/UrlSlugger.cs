@@ -5,6 +5,7 @@ namespace Json_Article_Website.Helper
 {
     public static class UrlSlugger
     {
+
         public static string GenerateSlug(string input)
         {
             if (string.IsNullOrEmpty(input))

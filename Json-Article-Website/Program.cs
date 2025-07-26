@@ -3,6 +3,13 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
+builder.Services.AddRouting(options =>
+{
+    options.LowercaseUrls = true; // Optional: Makes URLs lowercase
+    options.LowercaseQueryStrings = true; // Optional: Makes query strings lowercase
+    options.AppendTrailingSlash = false; // Optional: Appends a trailing slash to URLs
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

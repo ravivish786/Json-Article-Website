@@ -15,7 +15,7 @@ namespace Json_Article_Website.Controllers
 
         [HttpPost]
         [Route("login")]
-        public Task<IActionResult> Login(string username, string password, string returnUrl = null)
+        public Task<IActionResult> Login(string Email, string password, string ReturnUrl = null)
         {
             // Here you would typically validate the user credentials
             // For simplicity, we are assuming the login is always successful
@@ -23,9 +23,9 @@ namespace Json_Article_Website.Controllers
             {
                 // Set authentication cookie or session here
                 // Redirect to the return URL or default page
-                return Task.FromResult<IActionResult>(Redirect(returnUrl ?? "/"));
+                return Task.FromResult<IActionResult>(Redirect(ReturnUrl ?? "/"));
             }
-            ViewData["ReturnUrl"] = returnUrl;
+            ViewData["ReturnUrl"] = ReturnUrl;
             return Task.FromResult<IActionResult>(View());
         }
 

@@ -27,7 +27,8 @@ main a:hover h5 {
 
 /* Artilce content */
 .article-content {
-    font-size: 1.2rem; 
+    font-size: 1.2rem;
+    line-height: 1.7;
 }
 
     .article-content img {

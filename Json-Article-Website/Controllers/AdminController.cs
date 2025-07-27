@@ -16,7 +16,7 @@ namespace Json_Article_Website.Controllers
         [Route("admin")]
         public async Task<IActionResult> Index(int? page = null)
         {
-            var articles = await articleService.GetArticlesAsync(page);
+            var articles = await articleService.GetArticlesAsync(page, true);
 
             if (Request.IsAjaxRequest())
             {

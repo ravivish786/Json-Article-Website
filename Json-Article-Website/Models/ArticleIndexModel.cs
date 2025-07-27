@@ -7,6 +7,14 @@
         public string Slug { get; set; } = string.Empty;
         public DateTime PublishedDate { get; set; } = DateTime.Now;
         public string ImageUrl { get; set; } = string.Empty;
+
+        public bool IsPublished
+        {
+            get
+            {
+                return PublishedDate <= DateTime.Now;
+            }
+        }
         
     }
 }

@@ -1,4 +1,5 @@
-﻿using Json_Article_Website.Helper;
+﻿using System;
+using Json_Article_Website.Helper;
 using Json_Article_Website.Interface;
 using Json_Article_Website.Models;
 using Json_Article_Website.Service;
@@ -55,6 +56,17 @@ namespace Json_Article_Website.Controllers
             {
                 model.Content = Sanatizer.SanitizeHtml(model.Content);
                 model.Slug = UrlSlugger.GenerateSlug(model.Title);
+                 
+                DateTime dateOnly = model.PublishedDate; // e.g., 2025-07-26 00:00:00
+                DateTime _now = DateTime.Now;
+
+                DateTime combined = dateOnly
+                    .AddHours(_now.Hour)
+                    .AddMinutes(_now.Minute)
+                    .AddSeconds(_now.Second);
+
+                model.PublishedDate = combined;
+
                 if (model.Id > 0)
                 {
                     await articleService.PutArticleAsync(model.Id, model);

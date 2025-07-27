@@ -24,3 +24,17 @@ body {
 main a:hover h5 {
     text-decoration: underline !important;
 }
+
+/* Artilce content */
+.article-content {
+    font-size: 1.2rem;
+    line-height: 1.6;
+    margin-bottom: 20px;    
+}
+
+    .article-content img {
+        max-width: 100%;
+        height: auto;
+        display: block;
+        margin: 0 auto;
+    }

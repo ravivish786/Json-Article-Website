@@ -5,14 +5,64 @@
     ViewData["Title"] = Model.Title;
 }
 
-<article class="article-details">
-	<h1 class="article-title">@Model.Title</h1>
-	<p class="article-date">
-		<span class="bi bi-calendar"></span>
-		<span>@Model.CreatedDate.ToString("MMMM dd, yyyy")</span>
-	</p>
-	<div class="article-content my-3">
-		@Html.Raw(Model.Content)
-	</div>
-</article>
+<sectio class="d-flex justify-content-between  flex-column flex-lg-row gap-3">
+    <article class="article-details mx-lg-5 px-lg-5">
+        <h1 class="article-title">@Model.Title</h1>
+        <p class="article-date">
+            <span class="bi bi-calendar"></span>
+            <span>@Model.PublishedDate.ToString("MMMM dd yyyy, hh:mm tt")</span>
+        </p>
+        <div class="article-content mt-5">
+            @Html.Raw(Model.Content)
+        </div>
+    </article>
+    @* <aside class="overflow-y-auto d-none d-lg-block">
+        <div style="min-width: max-content">
+            <h5>Table Content </h5>
+            <hr/>
+            <div id="table-content"></div>
+        </div>
+    </aside> *@
+</sectio>
 
+@* @section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Select the article content
+            const content = document.querySelector('.article-content');
+            if (!content) return;
+
+            // Find all headings (h1-h6) inside the content
+            const headings = content.querySelectorAll('h1, h2, h3, h4, h5, h6');
+            if (headings.length === 0) return;
+
+            // Create TOC container
+            const toc = document.createElement('nav');
+            toc.className = 'table-of-contents';
+            const list = document.createElement('ul');
+
+            headings.forEach(function (heading, idx) {
+                // Ensure each heading has an id for anchor links
+                if (!heading.id) {
+                    heading.id = 'heading-' + idx;
+                }
+                const li = document.createElement('li');
+                li.style.marginLeft = ((parseInt(heading.tagName[1]) - 1) * 20) + 'px'; // Indent by heading level
+                const a = document.createElement('a');
+                a.href = '#' + heading.id;
+                a.textContent = heading.textContent;
+                li.appendChild(a);
+                list.appendChild(li);
+            });
+
+            toc.appendChild(list);
+
+            const table_content = document.querySelector('#table-content');
+            if (!table_content) return;
+
+            // Clear previous content and append the TOC element
+            table_content.innerHTML = '';
+            table_content.appendChild(toc);
+        });
+    </script>
+} *@

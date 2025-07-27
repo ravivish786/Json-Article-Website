@@ -5,6 +5,10 @@
 	ViewData["Title"] = (Model.Id > 0 ? "Update" : "New") + " Article";
 }
  
+@section CSS {
+	<link href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css" rel="stylesheet">
+}
+
 <h1>
 	@ViewData["Title"]
 </h1>
@@ -14,6 +18,9 @@
 {
 	@Html.AntiForgeryToken()
     @Html.HiddenFor(x => x.Id)
+	@Html.HiddenFor(x => x.IndexFileName)
+	@Html.HiddenFor(x => x.Content ) <!-- Hidden field to store the content from the editor -->
+	<!-- Validation Summary -->
 	 
 	@Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
@@ -24,18 +31,20 @@
 	</div>
 
 	<div class="col-md-12">
-		@Html.LabelFor(x => x.CreatedDate, "Publishing Date", new { @class = "form-label fw-bold" })
-		@Html.TextBoxFor(x => x.CreatedDate, Model.CreatedDate.Date.ToString("yyyy-MM-dd"), new
+		@Html.LabelFor(x => x.PublishedDate, "Publishing Date", new { @class = "form-label fw-bold" })
+		@Html.TextBoxFor(x => x.PublishedDate, Model.PublishedDate.Date.ToString("yyyy-MM-dd"), new
 		{
 			@type = "date", 
-			@class = "form-control" 
+			@class = "form-control" ,
+			@min = Model.PublishedDate.Date.ToString("yyyy-MM-dd"),
 		})
-		@Html.ValidationMessageFor(x => x.CreatedDate, "", new { @class = "text-danger" })
+		@Html.ValidationMessageFor(x => x.PublishedDate, "", new { @class = "text-danger" })
 	</div>
 
 	<div class="col-md-12">
 		@Html.LabelFor(x => x.Content, new { @class = "form-label fw-bold" })
-		@Html.TextAreaFor(x => x.Content, new { @class = "form-control", placeholder = "Content", rows = 10 })
+		@* @Html.TextAreaFor(x => x.Content, new { @class = "form-control", placeholder = "Content", rows = 10 }) *@
+		<div id="editor-container" style="height: 300px;"></div>
 		@Html.ValidationMessageFor(x => x.Content, "", new { @class = "text-danger" })
 	</div>
 
@@ -43,6 +52,33 @@
 		<button type="submit" class="btn btn-primary rounded-pill px-4">
 			@(Model.Id > 0 ? "Update" : "Publish")
 		</button>
+ 
 	</div>
 }
 
+@section Scripts {
+	<script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
+ 
+	<script>
+
+		// Initialize Quill editor
+		var quill = new Quill('#editor-container', {
+			// modules: {
+			// 	toolbar: [
+			// 		['bold', 'italic', 'underline'],
+			// 		[{ 'list': 'ordered'}, { 'list': 'bullet' }],
+			// 		['link', 'image']
+			// 	]
+			// },
+			placeholder: 'Write your article content here...',
+			theme: 'snow'
+		});
+		// Set the content of the editor
+		quill.root.innerHTML = '@Html.Raw(Model.Content)';
+
+		// Handle form submission to update the hidden content field
+		document.querySelector('form').addEventListener('submit', function() {
+			document.getElementById('Content').value = quill.root.innerHTML;
+		});
+	</script>
+}

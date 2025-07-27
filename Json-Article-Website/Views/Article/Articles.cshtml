@@ -17,13 +17,13 @@
 				asp-action="Details" 
 				asp-route-id="@article.Id"
 				asp-route-slug="@article.Slug">
-				<span class="d-flex w-100 justify-content-between">
+				<span class="d-flex w-100 justify-content-md-between flex-column flex-md-row flex-wrap gap-2">
 					<h5 class="mb-1 fw-bold">
 						@article.Title
 					</h5>
 					<small class="text-body-secondary">
 						<span class="bi bi-calendar"></span>
-						<span>@article.PublishedDate.ToString("MMMM dd, yyyy")</span>
+						<span>@article.PublishedDate.ToString("MMMM dd yyyy, hh:mm tt")</span>
 					</small>
 				</span>
 			</a>

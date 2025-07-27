@@ -1,6 +1,4 @@
-﻿@using Json_Article_Website.Models
-
-@model IEnumerable<ArticleIndexModel>
+﻿@model ArticlesList
 @{
 	ViewData["Title"] = "Personal Blogs";
 
@@ -18,10 +16,10 @@
 	</span>
 </div>
 <hr />
-@if (Model != null && Model.Count() > 0)
+@if (Model != null && Model.Articles.Count() > 0)
 {
 	<ul class="list-group list-group-flush">
-		@foreach (var article in Model)
+		@foreach (var article in Model.Articles)
 		{
 			<li class="list-group-item">
 				<a class=" link-dark text-decoration-none"

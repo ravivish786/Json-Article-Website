@@ -32,7 +32,12 @@ namespace Json_Article_Website.Controllers
         public async Task<IActionResult> Articles(int? page = null)
         {
             var articles = await _articleService.GetArticlesAsync(page);
-             
+
+            if (Request.)
+            {
+
+            }
+
             return View(articles); 
         }
     }

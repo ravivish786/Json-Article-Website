@@ -27,7 +27,7 @@ namespace Json_Article_Website.Service
             return articles;
         }
 
-        public async Task<IEnumerable<ArticleIndexModel>?> GetArticlesAsync(int? _page)
+        public async Task<ArticlesList> GetArticlesAsync(int? _page)
         {
             if (_page == null)
             {
@@ -46,7 +46,15 @@ namespace Json_Article_Website.Service
                 return default;
             }
             var articles = JsonSerializer.Deserialize<IEnumerable<ArticleIndexModel>>(bytes);
-            return articles?.OrderByDescending(x => x.PublishedDate);
+
+            var data = new ArticlesList
+            {
+                Page = page - 1,
+                Articles = articles?.OrderByDescending(x => x.PublishedDate),
+                HasNextPage = true
+            };
+
+            return data;
         }
 
         public async Task<ArticleDetailsModel> PostArticleAsync(ArticleDetailsModel article)

@@ -17,7 +17,7 @@ namespace Json_Article_Website.Interface
         /// </summary>
         /// <param name="page">The page number to retrieve.</param>
         /// <returns>A task that represents the asynchronous operation, containing a list of articles.</returns>
-        Task<IEnumerable<ArticleIndexModel>?> GetArticlesAsync(int? _page);
+        Task<ArticlesList> GetArticlesAsync(int? _page);
 
 
         Task<ArticleDetailsModel> PostArticleAsync(ArticleDetailsModel article);

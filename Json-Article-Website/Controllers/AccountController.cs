@@ -6,6 +6,7 @@ namespace Json_Article_Website.Controllers
     {
 
         [HttpGet]
+        [Route("login")]
         public Task<IActionResult> Login(string returnUrl = null)
         {
             ViewData["ReturnUrl"] = returnUrl;
@@ -13,6 +14,7 @@ namespace Json_Article_Website.Controllers
         }
 
         [HttpPost]
+        [Route("login")]
         public Task<IActionResult> Login(string username, string password, string returnUrl = null)
         {
             // Here you would typically validate the user credentials

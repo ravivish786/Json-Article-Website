@@ -155,7 +155,9 @@ namespace Json_Article_Website.Service
         {
             var indexFile = fileService.GetIndexPath(indexPageNumber);
             var bytes = await fileService.ReadFileAsync(indexFile) ?? Array.Empty<byte>();
-            var articles = bytes == null ? [] : JsonSerializer.Deserialize<IList<ArticleIndexModel>>(bytes) ?? [];
+            var articles = bytes == null 
+                ? [] 
+                : JsonSerializer.Deserialize<IList<ArticleIndexModel>>(bytes) ?? [];
 
             // fetch index and replce with model
             var index = articles.IndexOf(articles.FirstOrDefault(x => x.Id == model.Id));

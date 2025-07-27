@@ -1,5 +1,7 @@
 ﻿using System.Text.Json;
+using AngleSharp.Io;
 using Json_Article_Website.Models;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 
 namespace Json_Article_Website.Helper
 {
@@ -60,6 +62,18 @@ namespace Json_Article_Website.Helper
         }
 
         public static LoginSession GetLoginCookie(this HttpRequest request)
+        {
+           return GetLoginSession(request);
+        }
+
+        public static LoginSession GetLoginCookie(this HtmlHelper htmlHelper)
+        {
+            var request = htmlHelper.ViewContext.HttpContext.Request;
+            return GetLoginSession(request);
+        }
+
+
+        private static LoginSession GetLoginSession(HttpRequest request)
         {
             var defaultLogin = new LoginSession();
 

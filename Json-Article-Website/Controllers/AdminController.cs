@@ -46,7 +46,7 @@ namespace Json_Article_Website.Controllers
         [HttpGet]
         public async Task<IActionResult> Delete(int id)
         {
-            var article = await articleService.DeleteArticleAsync(id);
+            await articleService.DeleteArticleAsync(id);
             
             return RedirectToActionPermanent("Index", "Admin");
         }

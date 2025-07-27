@@ -47,12 +47,23 @@ namespace Json_Article_Website.Controllers
                 }
                  
             }
-             
-            return Task.FromResult<IActionResult>(View(model));
+            else
+            {
+                // return summery message like enter valid creadentia;
+                ModelState.AddModelError(string.Empty, "Invalid login attempt. Please enter valid credentials.");
+            }
+             return Task.FromResult<IActionResult>(View(model));
         }
 
+        [Route("logout")]
+        public Task<IActionResult> Logout()
+        {
+            // Clear the authentication cookie
+            CookieHelper.DeleteCookie(Response, CookieEnum.LoginSession.ToString());
+            return Task.FromResult<IActionResult>(RedirectToAction("Index", "Home"));
+        }
 
-
+        [Route("profile")]
         public IActionResult Index()
         {
             return View();

@@ -1,4 +1,5 @@
-﻿using Json_Article_Website.Interface;
+﻿using Json_Article_Website.Extention;
+using Json_Article_Website.Interface;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Json_Article_Website.Controllers
@@ -33,9 +34,9 @@ namespace Json_Article_Website.Controllers
         {
             var articles = await _articleService.GetArticlesAsync(page);
 
-            if (Request.)
+            if (Request.IsAjaxRequest())
             {
-
+                return PartialView("_ArticleList", articles);
             }
 
             return View(articles); 

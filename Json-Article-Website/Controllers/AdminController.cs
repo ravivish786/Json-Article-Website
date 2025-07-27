@@ -1,4 +1,5 @@
 ﻿using System;
+using Json_Article_Website.Extention;
 using Json_Article_Website.Filter;
 using Json_Article_Website.Helper;
 using Json_Article_Website.Interface;
@@ -16,6 +17,12 @@ namespace Json_Article_Website.Controllers
         public async Task<IActionResult> Index(int? page = null)
         {
             var articles = await articleService.GetArticlesAsync(page);
+
+            if (Request.IsAjaxRequest())
+            {
+                return PartialView("_ArticleList", articles);
+            }
+
             return View(articles);
         }
 

@@ -19,42 +19,7 @@
 @if (Model != null && Model.Articles.Count() > 0)
 {
 	<ul class="list-group list-group-flush">
-		@foreach (var article in Model.Articles)
-		{
-			<li class="list-group-item">
-				<a class=" link-dark text-decoration-none"
-				   asp-action="Details"
-				   asp-controller="Article"
-				   asp-route-id="@article.Id"
-				   asp-route-slug="@article.Slug">
-					<span class="d-flex w-100 justify-content-md-between flex-column flex-md-row flex-wrap gap-2">
-						<h5 class="mb-1 fw-bold">
-							@article.Title
-						</h5>
-						<small class="text-body-secondary">
-							<span class="bi bi-calendar"></span>
-							<span>@article.PublishedDate.ToString("MMMM dd yyyy, hh:mm tt")</span>
-						</small>
-					</span>
-				</a>
-				<span>
-					<span class="d-flex justify-content-end gap-3">
-						<a asp-action="edit"
-						   asp-controller="Admin"
-						   asp-route-id="@article.Id"
-						   class="link-primary text-decoration-none">
-							<span>Edit</span>
-						</a>
-						<a asp-action="Delete"
-						   asp-controller="admin"
-						   asp-route-id="@article.Id"
-						   class="link-danger text-decoration-none">
-							Delete
-						</a>
-					</span>
-				</span>
-			</li>
-		}
+		<partial name="_ArticleList" model="Model" />
 	</ul>
 }
 else

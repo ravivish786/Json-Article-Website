@@ -20,10 +20,14 @@
 		</a>
 	}
 
-	<!-- next page -->
-	<div class="d-flex justify-content-center py-3 load-more-article">
-		<button type="button" accesskey="" class="btn btn-secondary" data-url="">
-			Load More Articles
-		</button>
-	</div>
+	@if (Model.HasNextPage && Model.Page > 0)
+	{
+		<div class="d-flex justify-content-center py-3 load-more-article">
+			<button type="button"
+					accesskey="" class="btn btn-secondary px-4 rounded-pill"
+					data-url="@Url.Action("Articles", new { page= Model.Page })">
+				Load More Articles
+			</button>
+		</div>
+	}
 }

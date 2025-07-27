@@ -1,4 +1,5 @@
 ﻿using System;
+using Json_Article_Website.Filter;
 using Json_Article_Website.Helper;
 using Json_Article_Website.Interface;
 using Json_Article_Website.Models;
@@ -8,6 +9,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace Json_Article_Website.Controllers
 {
+    [BasicAuthentication]
     public class AdminController (IArticleService articleService) : Controller
     {
         [Route("admin")]

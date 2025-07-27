@@ -12,7 +12,7 @@
         {
             get
             {
-                return PublishedDate <= DateTime.Now;
+                return PublishedDate.Date <= DateTime.Now.Date;
             }
         }
         

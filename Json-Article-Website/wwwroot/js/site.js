@@ -3,6 +3,8 @@
 
 // Write your JavaScript code.
 
+/* dynamic boostrap model generator */
+
 
 /* load moe articles */
 $(document).on('click', '.load-more-article button', function (e) {
@@ -31,3 +33,24 @@ $(document).on('click', '.load-more-article button', function (e) {
 	});
 });
 
+/* Delete artcile */
+$(document).on('click', '.delete-article', function (e) {
+    e.preventDefault();
+    let me = $(this);
+    var url = $(me).attr('href');
+    if (confirm('Are you sure you want to delete this article?')) {
+        $.ajax({
+            url: url,
+            success: function (data) {
+                if (data.success) {
+                    $(me).closest('.list-group-item').remove();
+                } else {
+                    alert(data.message);
+                }
+            },
+            error: function () {
+                alert('Error deleting article.');
+            }
+        });
+    }
+});

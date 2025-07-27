@@ -54,8 +54,13 @@ namespace Json_Article_Website.Controllers
         public async Task<IActionResult> Delete(int id)
         {
             await articleService.DeleteArticleAsync(id);
-            
-            return RedirectToActionPermanent("Index", "Admin");
+
+            if (!Request.IsAjaxRequest())
+            {
+                return RedirectToActionPermanent("Index", "Admin");
+            }
+            // return json response 
+            return Json(new { success = true, message = "Article deleted successfully." });
         }
 
         [HttpPost, ValidateAntiForgeryToken]

@@ -15,7 +15,6 @@ namespace Json_Article_Website.Controllers
         {
             var article = await _articleService.GetArticleDetailsAsync(id);
 
-
             if (article == null)
             {
                 return NotFound();

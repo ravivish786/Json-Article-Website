@@ -3,6 +3,7 @@
 @model ArticleDetailsModel 
 @{
 	ViewData["Title"] = (Model.Id > 0 ? "Update" : "New") + " Article";
+	var minDate = DateTime.Now > Model.PublishedDate ? Model.PublishedDate : DateTime.Now;
 }
  
 @section CSS {
@@ -36,7 +37,7 @@
 		{
 			@type = "date", 
 			@class = "form-control" ,
-			@min = Model.PublishedDate.Date.ToString("yyyy-MM-dd"),
+				@min = minDate.Date.ToString("yyyy-MM-dd"),
 		})
 		@Html.ValidationMessageFor(x => x.PublishedDate, "", new { @class = "text-danger" })
 	</div>

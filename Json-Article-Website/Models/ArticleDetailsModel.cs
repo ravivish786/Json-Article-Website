@@ -20,7 +20,7 @@ namespace Json_Article_Website.Models
         {
             get
             {
-                return PublishedDate <= DateTime.Today;
+                return PublishedDate.Date <= DateTime.Today.Date;
             }
         }
     }

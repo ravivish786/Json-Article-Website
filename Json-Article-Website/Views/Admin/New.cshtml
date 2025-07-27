@@ -44,7 +44,9 @@
 	<div class="col-md-12">
 		@Html.LabelFor(x => x.Content, new { @class = "form-label fw-bold" })
 		@* @Html.TextAreaFor(x => x.Content, new { @class = "form-control", placeholder = "Content", rows = 10 }) *@
-		<div id="editor-container" style="height: 300px;"></div>
+		<div id="editor-container" style="height: 300px;">
+			@Html.Raw(Model.Content)
+		</div>
 		@Html.ValidationMessageFor(x => x.Content, "", new { @class = "text-danger" })
 	</div>
 
@@ -74,7 +76,7 @@
 			theme: 'snow'
 		});
 		// Set the content of the editor
-		quill.root.innerHTML = '@Html.Raw(Model.Content)';
+		//quill.root.innerHTML = '@Html.Raw(Model.Content)';
 
 		// Handle form submission to update the hidden content field
 		document.querySelector('form').addEventListener('submit', function() {

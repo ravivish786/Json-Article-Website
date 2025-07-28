@@ -44,6 +44,13 @@ main a:hover h5 {
         margin-bottom: 1rem;
     }
 
+    .article-content a {
+        cursor: pinter;
+    }
+
+
+
+
 
 /* link Priview */
 .article-preview-card {
@@ -51,4 +58,8 @@ main a:hover h5 {
     position: absolute;
     z-index: 9999;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.article-preview-card img {
+    max-height: 200px;
 }

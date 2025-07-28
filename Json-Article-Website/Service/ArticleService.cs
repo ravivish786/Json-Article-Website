@@ -1,4 +1,6 @@
 ﻿using System.Text.Json;
+using System.Web;
+using HtmlAgilityPack;
 using Json_Article_Website.Helper;
 using Json_Article_Website.Interface;
 using Json_Article_Website.Models;
@@ -7,9 +9,9 @@ using Microsoft.VisualBasic;
 
 namespace Json_Article_Website.Service
 {
-    public class ArticleService(IWebHostEnvironment webHost) : IArticleService
+    public class ArticleService(IWebHostEnvironment webHost, ILogger<ArticleService> _logger) : IArticleService
     {
-        private readonly FileService fileService = new FileService(webHost);
+        private readonly FileService fileService = new(webHost);
 
 
         public async Task<ArticleDetailsModel?> GetArticleDetailsAsync(int id )
@@ -77,7 +79,7 @@ namespace Json_Article_Website.Service
             await fileService.SaveFileAsync(filePath, bytes);
 
             // update index of article 
-            metadata = await UpdateFilesIndex(new ArticleIndexModel
+            await UpdateFilesIndex(new ArticleIndexModel
             {
                 Id = article.Id,
                 Title = article.Title,
@@ -162,8 +164,8 @@ namespace Json_Article_Website.Service
         private async Task UpdateIndexFileContentAsync(int indexPageNumber, ArticleIndexModel model, bool? Delete = null)
         {
             var indexFile = fileService.GetIndexPath(indexPageNumber);
-            var bytes = await fileService.ReadFileAsync(indexFile) ?? Array.Empty<byte>();
-            var articles = bytes == null 
+            var bytes = await fileService.ReadFileAsync(indexFile) ?? [];
+            var articles = bytes == null || bytes.Length == 0
                 ? [] 
                 : JsonSerializer.Deserialize<IList<ArticleIndexModel>>(bytes) ?? [];
 
@@ -189,7 +191,7 @@ namespace Json_Article_Website.Service
         {
             if (articles.Count == 0)
             {
-                await fileService.SaveFileAsync(indexFilePath, Array.Empty<byte>());
+                await fileService.SaveFileAsync(indexFilePath, []);
                 return;
             }
             var bytes = JsonSerializer.SerializeToUtf8Bytes(articles);
@@ -219,6 +221,41 @@ namespace Json_Article_Website.Service
             await this.UpdateIndexFileAsync(indexFilePath, articles);
             await this.UpdateFilesMetadata(_metadata);
             return _metadata;
+        }
+
+        public async Task<ScrapeArticleModel> ScrapeArticleAsync(string url)
+        {
+            var result = new ScrapeArticleModel();
+
+            try
+            {
+                using var httpClient = new HttpClient();
+                httpClient.DefaultRequestHeaders.UserAgent.ParseAdd("Mozilla/5.0");
+
+                var html = await httpClient.GetStringAsync(HttpUtility.UrlDecode(url));
+
+                var htmlDoc = new HtmlDocument();
+                htmlDoc.LoadHtml(html);
+
+                // Try Open Graph tags first
+                result.Title = htmlDoc.DocumentNode.SelectSingleNode("//meta[@property='og:title']")?.GetAttributeValue("content", null);
+                result.Description = htmlDoc.DocumentNode.SelectSingleNode("//meta[@property='og:description']")?.GetAttributeValue("content", null);
+                result.Image = htmlDoc.DocumentNode.SelectSingleNode("//meta[@property='og:image']")?.GetAttributeValue("content", null);
+
+                // Fallbacks
+                if (string.IsNullOrEmpty(result.Title))
+                    result.Title = htmlDoc.DocumentNode.SelectSingleNode("//title")?.InnerText;
+
+                if (string.IsNullOrEmpty(result.Description))
+                    result.Description = htmlDoc.DocumentNode.SelectSingleNode("//meta[@name='description']")?.GetAttributeValue("content", null);
+            }
+            catch (Exception ex)
+            {
+                result = new ScrapeArticleModel();
+                _logger.LogError(ex, "Error scraping article from URL: {Url}", url);
+            }
+             
+            return result;
         }
 
         #endregion

@@ -23,7 +23,6 @@ namespace Json_Article_Website.Interface
         Task<ArticleDetailsModel> PostArticleAsync(ArticleDetailsModel article);
         Task<ArticleDetailsModel> PutArticleAsync(int id, ArticleDetailsModel article);
         Task<bool> DeleteArticleAsync(int id);
-
-
+        Task<ScrapeArticleModel> ScrapeArticleAsync(string url);
     }
 }

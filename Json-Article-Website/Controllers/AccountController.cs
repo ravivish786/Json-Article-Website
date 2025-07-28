@@ -9,7 +9,7 @@ namespace Json_Article_Website.Controllers
 
         [HttpGet]
         [Route("login")]
-        public Task<IActionResult> Login(string returnUrl = null)
+        public Task<IActionResult> Login(string? returnUrl = null)
         {
             ViewData["ReturnUrl"] = returnUrl;
             return Task.FromResult<IActionResult>(View(new LoginModel

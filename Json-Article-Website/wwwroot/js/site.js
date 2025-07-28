@@ -54,3 +54,6 @@ $(document).on('click', '.delete-article', function (e) {
         });
     }
 });
+
+
+               

@@ -6,7 +6,7 @@
     var user = @Context.Request.GetLoginCookie();
 }
 
-<sectio class="d-flex justify-content-between  flex-column flex-lg-row gap-3">
+<section class="d-flex justify-content-between  flex-column flex-lg-row gap-3">
 
 
     @if (!Model.IsPublished && !user.IsAuthenticated)
@@ -45,7 +45,7 @@
             <div id="table-content"></div>
         </div>
     </aside> *@
-</sectio>
+</section>
 
 @* @section Scripts {
     <script>
@@ -88,3 +88,7 @@
         });
     </script>
 } *@
+
+@section Scripts{
+	<script defer src="/js/article-link-scraper.js" asp-append-version="true"></script>
+}

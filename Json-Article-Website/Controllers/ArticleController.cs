@@ -40,5 +40,27 @@ namespace Json_Article_Website.Controllers
 
             return View(articles); 
         }
+
+
+
+        [HttpGet]
+        public async Task<IActionResult> Scrape(string url)
+        {
+            if (string.IsNullOrWhiteSpace(url))
+            {
+                return BadRequest("URL cannot be empty.");
+            }
+            try
+            {
+                var article = await _articleService.ScrapeArticleAsync(url);
+                return Json(article);
+                
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error scraping article from URL: {Url}", url);
+                return StatusCode(500, "Internal server error while scraping article.");
+            }
+        }
     }
 }

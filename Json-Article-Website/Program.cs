@@ -13,13 +13,15 @@ builder.Services.AddRouting(options =>
     options.AppendTrailingSlash = false; // Optional: Appends a trailing slash to URLs
 });
 
-builder.Services.AddScoped<IArticleService, ArticleService>();
 builder.Services.AddLogging(loggingBuilder =>
 {
     loggingBuilder.ClearProviders();
     loggingBuilder.AddConsole();
     loggingBuilder.AddDebug();
 });
+
+builder.Services.AddScoped<IArticleService, ArticleService>();
+
 
 var app = builder.Build();
 

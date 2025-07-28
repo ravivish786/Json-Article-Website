@@ -1,4 +1,3 @@
-# Json-Article-Website
 
 # 📚 JSON Article Website
 

@@ -1,7 +1,10 @@
-
 # 📚 JSON Article Website
 
+[![roadmap.sh project](https://img.shields.io/badge/roadmap.sh-Personal%20Blog%20Project-blueviolet)](https://roadmap.sh/projects/personal-blog)
+
 A lightweight, file-based article management system using JSON and HTML/Markdown. Designed for speed, simplicity, and minimal server dependencies. Ideal for static hosting, personal blogs, or offline publishing.
+
+> 🛠️ This project is built as part of the [roadmap.sh Personal Blog Project](https://roadmap.sh/projects/personal-blog).
 
 ---
 

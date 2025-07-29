@@ -48,10 +48,6 @@ main a:hover h5 {
         cursor: pinter;
     }
 
-
-
-
-
 /* link Priview */
 .article-preview-card {
     width: 18rem;
@@ -63,3 +59,18 @@ main a:hover h5 {
 .article-preview-card img {
     max-height: 200px;
 }
+
+/* Header navbar */
+
+header {
+    position: sticky;
+    top: 0;
+    z-index: 1030;
+    background-color: rgba(255, 255, 255, 0.7); /* semi-transparent */
+    backdrop-filter: blur(10px); /* for glass effect */
+    transition: background-color 0.3s ease;
+}
+
+    header.scrolled {
+        background-color: white; /* solid on scroll */
+    }

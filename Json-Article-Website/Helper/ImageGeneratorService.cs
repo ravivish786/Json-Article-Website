@@ -30,7 +30,7 @@ namespace Json_Article_Website.Helper
                 Typeface = SKTypeface.FromFamilyName("Arial", SKFontStyle.Bold)
             };
             var titleX = 60;
-            var titleY = 280;
+            var titleY = 60;
             canvas.DrawText(title, titleX, titleY, titlePaint);
 
             // Author Name
@@ -218,7 +218,7 @@ namespace Json_Article_Website.Helper
             string fullPath = Path.Combine(folderPath, fileName);
 
 
-            byte[] imageBytes = GenerateArticleImageWebP(title, authorName, siteName);
+            byte[] imageBytes = GenerateArticleImageWebP(title, authorName, siteName, 1000, 420);
             SaveImageToFile(imageBytes, fullPath);
              
             // Return relative URL

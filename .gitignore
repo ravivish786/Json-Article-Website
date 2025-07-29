@@ -364,3 +364,6 @@ FodyWeavers.xsd
 
 # App_Data - exclude
 App_Data/
+
+# image folder 
+wwwroot/generated-images

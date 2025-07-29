@@ -80,7 +80,7 @@ namespace Json_Article_Website.Controllers
                     .AddSeconds(_now.Second);
 
                 model.PublishedDate = combined;
-
+                 
                 if (model.Id > 0)
                 {
                     await articleService.PutArticleAsync(model.Id, model);

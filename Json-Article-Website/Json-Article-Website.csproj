@@ -9,15 +9,20 @@
 
   <ItemGroup>
     <Compile Remove="App_Data\**" />
+    <Compile Remove="article-images\**" />
     <Content Remove="App_Data\**" />
+    <Content Remove="article-images\**" />
     <EmbeddedResource Remove="App_Data\**" />
+    <EmbeddedResource Remove="article-images\**" />
     <None Remove="App_Data\**" />
+    <None Remove="article-images\**" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="HtmlAgilityPack" Version="1.12.2" />
     <PackageReference Include="HtmlSanitizer" Version="9.0.886" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.7" />
+    <PackageReference Include="SkiaSharp" Version="3.119.0" />
   </ItemGroup>
 
 </Project>

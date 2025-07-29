@@ -1,18 +1,17 @@
 ﻿using System.Text.Json;
 using System.Web;
 using HtmlAgilityPack;
+using Json_Article_Website.Extention;
 using Json_Article_Website.Helper;
 using Json_Article_Website.Interface;
 using Json_Article_Website.Models;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.VisualBasic;
 
 namespace Json_Article_Website.Service
 {
     public class ArticleService(IWebHostEnvironment webHost, ILogger<ArticleService> _logger) : IArticleService
     {
         private readonly FileService fileService = new(webHost);
-
+        private readonly ImageGeneratorService imageGenerator = new(webHost);
 
         public async Task<ArticleDetailsModel?> GetArticleDetailsAsync(int id )
         {
@@ -71,6 +70,11 @@ namespace Json_Article_Website.Service
             {
                 throw new InvalidOperationException($"Article with ID {article.Id} already exists.");
             }
+
+            article.ImageUrl = string.IsNullOrWhiteSpace(article.ImageUrl) 
+                ? imageGenerator.GenerateDefaultImage(article.Title, "Admin", "Linkker")
+                : article.ImageUrl;
+
             var bytes = JsonSerializer.SerializeToUtf8Bytes(article) ?? throw new ArgumentNullException(nameof(article), "Article cannot be null");
             if (bytes.Length == 0)
             {
@@ -97,6 +101,10 @@ namespace Json_Article_Website.Service
             {
                 throw new FileNotFoundException($"Article with ID {id} does not exist.");
             }
+
+            article.ImageUrl = string.IsNullOrWhiteSpace(article.ImageUrl)
+                ? imageGenerator.GenerateDefaultImage(article.Title, "Admin", "Linkker")
+                : article.ImageUrl;
 
             var bytes = JsonSerializer.SerializeToUtf8Bytes(article) ?? throw new ArgumentNullException(nameof(article), "Article cannot be null");
             if (bytes.Length == 0)
@@ -139,9 +147,7 @@ namespace Json_Article_Website.Service
 
 
         #region Helper Methods
-
-
-
+         
         private string MetaDataPath => Path.Combine(fileService._appDataPath, "metadata.json");
 
         private async Task<ArticleFileMetadata> GetFilesMetaDataAsync()

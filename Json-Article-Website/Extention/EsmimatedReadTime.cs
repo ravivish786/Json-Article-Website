@@ -5,6 +5,10 @@ namespace Json_Article_Website.Extention
     public static class EsmimatedReadTime
     {
         // content can take html , markdown, or plain text
+
+        /// <summary>
+        /// show reading time in minutes for the given content
+        /// </summary>
         public static int GetEstimatedReadTime(this string content, int wordsPerMinute = 200)
         {
             if (string.IsNullOrEmpty(content))

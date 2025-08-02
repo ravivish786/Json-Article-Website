@@ -1,6 +1,7 @@
 ﻿using System.Text.Json;
 using System.Web;
 using HtmlAgilityPack;
+using Json_Article_Website.Extention;
 using Json_Article_Website.Helper;
 using Json_Article_Website.Interface;
 using Json_Article_Website.Models;
@@ -80,6 +81,8 @@ namespace Json_Article_Website.Service
                 ? imageGenerator.GenerateDefaultImage(article.Title, "Admin", "Linkker")
                 : article.ImageUrl;
 
+            article.ReadingTime = article.Content?.GetEstimatedReadTime() ?? 0;
+
             var bytes = JsonSerializer.SerializeToUtf8Bytes(article) ?? throw new ArgumentNullException(nameof(article), "Article cannot be null");
             if (bytes.Length == 0)
             {
@@ -96,6 +99,7 @@ namespace Json_Article_Website.Service
                 PublishedDate = article.PublishedDate,
                 Views = article.Views,
                 Likes = article.Likes,
+                ReadingTime = article.ReadingTime,
             }, metadata);
             return article;
         }
@@ -121,6 +125,8 @@ namespace Json_Article_Website.Service
                 article.ImageUrl = imageGenerator.GenerateDefaultImage(article.Title, "Admin", "Linkker");
             }
 
+            article.ReadingTime = article.Content?.GetEstimatedReadTime() ?? 0;
+
             var bytes = JsonSerializer.SerializeToUtf8Bytes(article) ?? throw new ArgumentNullException(nameof(article), "Article cannot be null");
             if (bytes.Length == 0)
             {
@@ -137,6 +143,7 @@ namespace Json_Article_Website.Service
                 PublishedDate = article.PublishedDate,
                 Views = article.Views,
                 Likes = article.Likes,
+                ReadingTime = article.ReadingTime,
             }, Delete: false);
 
             return article;
@@ -148,7 +155,8 @@ namespace Json_Article_Website.Service
 
             var article = await this.GetArticleDetailsAsync(id, cancellationToken);
 
-            // update index file 
+            // update index file but if file if open or read then 
+
             if (article != null) {
                 await this.UpdateIndexFileContentAsync(article.IndexFileName, new ArticleIndexModel
                 {

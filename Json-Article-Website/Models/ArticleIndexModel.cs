@@ -5,14 +5,14 @@
         public int Id { get; set; }
         public virtual string Title { get; set; } = string.Empty;
         public string Slug { get; set; } = string.Empty;
-        public DateTime PublishedDate { get; set; } = DateTime.Now;
+        public DateTime? PublishedDate { get; set; } = DateTime.Now;
         public string ImageUrl { get; set; } = string.Empty;
 
         public bool IsPublished
         {
             get
             {
-                return PublishedDate.Date <= DateTime.Now.Date;
+                return PublishedDate?.Date <= DateTime.Now.Date;
             }
         }
 

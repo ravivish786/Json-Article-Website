@@ -12,11 +12,11 @@
 				<h5 class="mb-1 fw-bold">
 					@article.Title
 				</h5>
-				<span class="text-body-secondary flex-shrink-0" style="max-width: max-content;"> 
-					<span class="d-flex flex-wrap gap-2 gap-md-3">
-						<span class="article-date">
+				<span class="text-body-secondary flex-shrink-0" style="max-width: max-content;">
+					<span  class="d-flex flex-wrap gap-2 gap-md-3">
+						<span data-tooltip-text="@article.PublishedDate?.ToString("MMMM dd yyyy, hh:mm tt")" class="article-date">
 							<span class="bi bi-calendar"></span>
-							<span>@article.PublishedDate.ToString("MMMM dd yyyy, hh:mm tt")</span>
+							<span>@article.PublishedDate.TimeAgo()</span>
 						</span>
 						<span class="article-views">
 							<span class="bi bi-eye-fill"></span>

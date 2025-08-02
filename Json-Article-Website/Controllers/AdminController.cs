@@ -71,7 +71,7 @@ namespace Json_Article_Website.Controllers
                 model.Content = Sanatizer.SanitizeHtml(model.Content);
                 model.Slug = UrlSlugger.GenerateSlug(model.Title);
                  
-                DateTime dateOnly = model.PublishedDate; // e.g., 2025-07-26 00:00:00
+                DateTime dateOnly = model.PublishedDate.Value; // e.g., 2025-07-26 00:00:00
                 DateTime _now = DateTime.Now;
 
                 DateTime combined = dateOnly

@@ -33,11 +33,11 @@
 
 	<div class="col-md-12">
 		@Html.LabelFor(x => x.PublishedDate, "Publishing Date", new { @class = "form-label fw-bold" })
-		@Html.TextBoxFor(x => x.PublishedDate, Model.PublishedDate.Date.ToString("yyyy-MM-dd"), new
+		@Html.TextBoxFor(x => x.PublishedDate, Model.PublishedDate?.Date.ToString("yyyy-MM-dd"), new
 		{
 			@type = "date", 
 			@class = "form-control" ,
-				@min = minDate.Date.ToString("yyyy-MM-dd"),
+				@min = minDate?.Date.ToString("yyyy-MM-dd"),
 		})
 		@Html.ValidationMessageFor(x => x.PublishedDate, "", new { @class = "text-danger" })
 	</div>

@@ -4,7 +4,7 @@
 {
 	@foreach (var article in Model.Articles)
 	{
-		<a class="list-group-item list-group-item-action"
+		<a class="list-group-item list-group-item-action px-0 py-3"
 		   asp-action="Details"
 		   asp-route-id="@article.Id"
 		   asp-route-slug="@article.Slug">
@@ -12,10 +12,22 @@
 				<h5 class="mb-1 fw-bold">
 					@article.Title
 				</h5>
-				<small class="text-body-secondary flex-shrink-0">
-					<span class="bi bi-calendar"></span>
-					<span>@article.PublishedDate.ToString("MMMM dd yyyy, hh:mm tt")</span>
-				</small>
+				<span class="text-body-secondary flex-shrink-0" style="max-width: max-content;"> 
+					<span class="d-flex flex-wrap gap-2 gap-md-3">
+						<span class="article-date">
+							<span class="bi bi-calendar"></span>
+							<span>@article.PublishedDate.ToString("MMMM dd yyyy, hh:mm tt")</span>
+						</span>
+						<span class="article-views">
+							<span class="bi bi-eye-fill"></span>
+							<span>@article.Views.ToAbbreviated() Views</span>
+						</span>
+						<span class="article-likes">
+							<span class="bi bi-heart"></span>
+							<span>@article.Likes.ToAbbreviated() Likes</span>
+						</span>
+					</span>
+				</span>
 			</span>
 		</a>
 	}

@@ -14,9 +14,9 @@ namespace Json_Article_Website.Controllers
     public class AdminController (IArticleService articleService) : Controller
     {
         [Route("admin")]
-        public async Task<IActionResult> Index(int? page = null)
+        public async Task<IActionResult> Index(int? page, CancellationToken cancellationToken)
         {
-            var articles = await articleService.GetArticlesAsync(page, true);
+            var articles = await articleService.GetArticlesAsync(page, true, cancellationToken);
 
             if (Request.IsAjaxRequest())
             {
@@ -37,9 +37,9 @@ namespace Json_Article_Website.Controllers
 
         [Route("edit/{id}")]
         [HttpGet]
-        public async Task<IActionResult> EditAsync(int id)
+        public async Task<IActionResult> EditAsync(int id, CancellationToken cancellationToken)
         {
-            var article = await articleService.GetArticleDetailsAsync(id);
+            var article = await articleService.GetArticleDetailsAsync(id, cancellationToken);
             if (article == null)
             {
                 return View("new", new ArticleDetailsModel { });
@@ -51,9 +51,9 @@ namespace Json_Article_Website.Controllers
 
         [Route("delete/{id}")]
         [HttpGet]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> Delete(int id, CancellationToken cancellationToken)
         {
-            await articleService.DeleteArticleAsync(id);
+            await articleService.DeleteArticleAsync(id, cancellationToken);
 
             if (!Request.IsAjaxRequest())
             {
@@ -64,7 +64,7 @@ namespace Json_Article_Website.Controllers
         }
 
         [HttpPost, ValidateAntiForgeryToken]
-        public async Task<IActionResult> Save(ArticleDetailsModel model)
+        public async Task<IActionResult> Save(ArticleDetailsModel model, CancellationToken cancellationToken)
         {
             if (ModelState.IsValid)
             {
@@ -83,11 +83,11 @@ namespace Json_Article_Website.Controllers
                  
                 if (model.Id > 0)
                 {
-                    await articleService.PutArticleAsync(model.Id, model);
+                    await articleService.PutArticleAsync(model.Id, model, cancellationToken);
                 }
                 else
                 { 
-                    await articleService.PostArticleAsync(model);
+                    await articleService.PostArticleAsync(model, cancellationToken);
                 }
                 return RedirectToActionPermanent("Details", "Article", new { id = model.Id, slug = model.Slug });
             }

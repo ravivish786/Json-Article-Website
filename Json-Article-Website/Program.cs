@@ -1,5 +1,7 @@
+using Json_Article_Website.BGS;
 using Json_Article_Website.Interface;
 using Json_Article_Website.Service;
+using Json_Article_Website.Service.Views;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,6 +23,11 @@ builder.Services.AddLogging(loggingBuilder =>
 });
 
 builder.Services.AddScoped<IArticleService, ArticleService>();
+
+// Register the view counter service and background service
+builder.Services.AddSingleton<IViewCounterService, InMemoryViewCounterService>();
+builder.Services.AddHostedService<ViewUpdateBackgroundService>();
+
 
 
 var app = builder.Build();

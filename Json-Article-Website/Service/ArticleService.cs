@@ -1,19 +1,20 @@
 ﻿using System.Text.Json;
 using System.Web;
 using HtmlAgilityPack;
-using Json_Article_Website.Extention;
 using Json_Article_Website.Helper;
 using Json_Article_Website.Interface;
 using Json_Article_Website.Models;
+using Json_Article_Website.Service.Views;
 
 namespace Json_Article_Website.Service
 {
-    public class ArticleService(IWebHostEnvironment webHost, ILogger<ArticleService> _logger) : IArticleService
+    public class ArticleService(IWebHostEnvironment webHost, ILogger<ArticleService> _logger, IViewCounterService viewCounter) 
+        : IArticleService
     {
         private readonly FileService fileService = new(webHost);
         private readonly ImageGeneratorService imageGenerator = new(webHost);
 
-        public async Task<ArticleDetailsModel?> GetArticleDetailsAsync(int id )
+        public async Task<ArticleDetailsModel?> GetArticleDetailsAsync(int id, CancellationToken cancellationToken )
         {
  
             // Simulate fetching articles from a data source
@@ -24,11 +25,15 @@ namespace Json_Article_Website.Service
             {
                 return default;
             }
+            // Increment view count for the article
+            viewCounter.IncrementView(id);
+
+            // Deserialize the byte array to ArticleDetailsModel
             var articles = JsonSerializer.Deserialize<ArticleDetailsModel>(bytes);
             return articles;
         }
 
-        public async Task<ArticlesList> GetArticlesAsync(int? _page, bool IsAdmin = false)
+        public async Task<ArticlesList> GetArticlesAsync(int? _page, bool IsAdmin = false, CancellationToken cancellationToken = default)
         {
             if (_page == null)
             {
@@ -58,7 +63,7 @@ namespace Json_Article_Website.Service
             return data;
         }
 
-        public async Task<ArticleDetailsModel> PostArticleAsync(ArticleDetailsModel article)
+        public async Task<ArticleDetailsModel> PostArticleAsync(ArticleDetailsModel article, CancellationToken cancellationToken)
         {
             var metadata = await GetFilesMetaDataAsync();
             metadata.LastArticleId += 1;
@@ -88,12 +93,14 @@ namespace Json_Article_Website.Service
                 Id = article.Id,
                 Title = article.Title,
                 Slug = article.Slug,
-                PublishedDate = article.PublishedDate
+                PublishedDate = article.PublishedDate,
+                Views = article.Views,
+                Likes = article.Likes,
             }, metadata);
             return article;
         }
 
-        public async Task<ArticleDetailsModel> PutArticleAsync(int id, ArticleDetailsModel article)
+        public async Task<ArticleDetailsModel> PutArticleAsync(int id, ArticleDetailsModel article, CancellationToken cancellationToken)
         {
             var fullPath = fileService.GetArticlePath(id);
 
@@ -102,9 +109,17 @@ namespace Json_Article_Website.Service
                 throw new FileNotFoundException($"Article with ID {id} does not exist.");
             }
 
-            article.ImageUrl = string.IsNullOrWhiteSpace(article.ImageUrl)
-                ? imageGenerator.GenerateDefaultImage(article.Title, "Admin", "Linkker")
-                : article.ImageUrl;
+
+            // If image is not provided, keep the existing one
+            var existingArticle = await this.GetArticleDetailsAsync(id, cancellationToken);
+            if (existingArticle != null && !string.IsNullOrWhiteSpace(article.ImageUrl) && existingArticle.Title.Equals(article.Title, StringComparison.OrdinalIgnoreCase))
+            {
+                article.ImageUrl = existingArticle.ImageUrl;
+            }
+            else
+            {
+                article.ImageUrl = imageGenerator.GenerateDefaultImage(article.Title, "Admin", "Linkker");
+            }
 
             var bytes = JsonSerializer.SerializeToUtf8Bytes(article) ?? throw new ArgumentNullException(nameof(article), "Article cannot be null");
             if (bytes.Length == 0)
@@ -119,17 +134,19 @@ namespace Json_Article_Website.Service
                 Id = article.Id,
                 Title = article.Title,
                 Slug = article.Slug,
-                PublishedDate = article.PublishedDate
+                PublishedDate = article.PublishedDate,
+                Views = article.Views,
+                Likes = article.Likes,
             }, Delete: false);
 
             return article;
         }
 
-        public async Task<bool> DeleteArticleAsync(int id)
+        public async Task<bool> DeleteArticleAsync(int id, CancellationToken cancellationToken)
         {
             var fullPath = fileService.GetArticlePath(id);
 
-            var article = await this.GetArticleDetailsAsync(id);
+            var article = await this.GetArticleDetailsAsync(id, cancellationToken);
 
             // update index file 
             if (article != null) {
@@ -145,9 +162,60 @@ namespace Json_Article_Website.Service
         }
 
 
+        public async Task<ScrapeArticleModel> ScrapeArticleAsync(string url, CancellationToken cancellationToken)
+        {
+            var result = new ScrapeArticleModel();
+
+            try
+            {
+                using var httpClient = new HttpClient();
+                httpClient.DefaultRequestHeaders.UserAgent.ParseAdd("Mozilla/5.0");
+
+                var html = await httpClient.GetStringAsync(HttpUtility.UrlDecode(url), cancellationToken);
+
+                var htmlDoc = new HtmlDocument();
+                htmlDoc.LoadHtml(html);
+
+                // Try Open Graph tags first
+                result.Title = htmlDoc.DocumentNode.SelectSingleNode("//meta[@property='og:title']")?.GetAttributeValue("content", null);
+                result.Description = htmlDoc.DocumentNode.SelectSingleNode("//meta[@property='og:description']")?.GetAttributeValue("content", null);
+                result.Image = htmlDoc.DocumentNode.SelectSingleNode("//meta[@property='og:image']")?.GetAttributeValue("content", null);
+
+                // Fallbacks
+                if (string.IsNullOrEmpty(result.Title))
+                    result.Title = htmlDoc.DocumentNode.SelectSingleNode("//title")?.InnerText;
+
+                if (string.IsNullOrEmpty(result.Description))
+                    result.Description = htmlDoc.DocumentNode.SelectSingleNode("//meta[@name='description']")?.GetAttributeValue("content", null);
+            }
+            catch (Exception ex)
+            {
+                result = new ScrapeArticleModel();
+                _logger.LogError(ex, "Error scraping article from URL: {Url}", url);
+            }
+
+            return result;
+        }
+
+
+        #region Increment /Decrement Views
+
+        public async Task IncrementViewAsync(int articleId, int count, CancellationToken cancellationToken)
+        {
+            //var article = await _dbContext.Articles.FindAsync(new object[] { articleId }, cancellationToken);
+            //if (article != null)
+            //{
+            //    article.Views += count;
+            //    await _dbContext.SaveChangesAsync(cancellationToken);
+            //}
+        }
+
+
+        #endregion
+
 
         #region Helper Methods
-         
+
         private string MetaDataPath => Path.Combine(fileService._appDataPath, "metadata.json");
 
         private async Task<ArticleFileMetadata> GetFilesMetaDataAsync()
@@ -227,41 +295,6 @@ namespace Json_Article_Website.Service
             await this.UpdateIndexFileAsync(indexFilePath, articles);
             await this.UpdateFilesMetadata(_metadata);
             return _metadata;
-        }
-
-        public async Task<ScrapeArticleModel> ScrapeArticleAsync(string url)
-        {
-            var result = new ScrapeArticleModel();
-
-            try
-            {
-                using var httpClient = new HttpClient();
-                httpClient.DefaultRequestHeaders.UserAgent.ParseAdd("Mozilla/5.0");
-
-                var html = await httpClient.GetStringAsync(HttpUtility.UrlDecode(url));
-
-                var htmlDoc = new HtmlDocument();
-                htmlDoc.LoadHtml(html);
-
-                // Try Open Graph tags first
-                result.Title = htmlDoc.DocumentNode.SelectSingleNode("//meta[@property='og:title']")?.GetAttributeValue("content", null);
-                result.Description = htmlDoc.DocumentNode.SelectSingleNode("//meta[@property='og:description']")?.GetAttributeValue("content", null);
-                result.Image = htmlDoc.DocumentNode.SelectSingleNode("//meta[@property='og:image']")?.GetAttributeValue("content", null);
-
-                // Fallbacks
-                if (string.IsNullOrEmpty(result.Title))
-                    result.Title = htmlDoc.DocumentNode.SelectSingleNode("//title")?.InnerText;
-
-                if (string.IsNullOrEmpty(result.Description))
-                    result.Description = htmlDoc.DocumentNode.SelectSingleNode("//meta[@name='description']")?.GetAttributeValue("content", null);
-            }
-            catch (Exception ex)
-            {
-                result = new ScrapeArticleModel();
-                _logger.LogError(ex, "Error scraping article from URL: {Url}", url);
-            }
-             
-            return result;
         }
 
         #endregion

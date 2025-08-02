@@ -11,9 +11,9 @@ namespace Json_Article_Website.Controllers
          
 
         [Route("articles/{id}/{slug?}")]
-        public async Task<IActionResult> Details(int id, string slug )
+        public async Task<IActionResult> Details(int id, string slug, CancellationToken cancellationToken)
         {
-            var article = await _articleService.GetArticleDetailsAsync(id);
+            var article = await _articleService.GetArticleDetailsAsync(id, cancellationToken);
 
             if (article == null)
             {
@@ -29,9 +29,9 @@ namespace Json_Article_Website.Controllers
         }
 
         [Route("articles")]
-        public async Task<IActionResult> Articles(int? page = null)
+        public async Task<IActionResult> Articles(int? page, CancellationToken cancellationToken)
         {
-            var articles = await _articleService.GetArticlesAsync(page, false);
+            var articles = await _articleService.GetArticlesAsync(page, false, cancellationToken);
 
             if (Request.IsAjaxRequest())
             {
@@ -44,7 +44,7 @@ namespace Json_Article_Website.Controllers
 
 
         [HttpGet]
-        public async Task<IActionResult> Scrape(string url)
+        public async Task<IActionResult> Scrape(string url, CancellationToken cancellationToken)
         {
             if (string.IsNullOrWhiteSpace(url))
             {
@@ -52,7 +52,7 @@ namespace Json_Article_Website.Controllers
             }
             try
             {
-                var article = await _articleService.ScrapeArticleAsync(url);
+                var article = await _articleService.ScrapeArticleAsync(url, cancellationToken);
                 return Json(article);
                 
             }

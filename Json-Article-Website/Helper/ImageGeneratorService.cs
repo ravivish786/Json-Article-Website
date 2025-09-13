@@ -205,9 +205,7 @@ namespace Json_Article_Website.Helper
 
         public string GenerateDefaultImage(string title, string authorName, string siteName )
         {
-            var sanitizedTitle = title;
-            var sanitizedAuthor = authorName;
-            var sanitizedSite = SanitizeFileName(siteName);
+            _ = SanitizeFileName(siteName);
 
             // Create safe filename
             string randomImageName = DateTime.Now.EncodeTime();

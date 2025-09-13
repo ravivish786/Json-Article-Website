@@ -12,24 +12,24 @@ namespace Json_Article_Website.Helper
 
     public static class CookieHelper
     {
-        public static void SetCookie(this HttpResponse response, string key, string value, int expireTime = 7)
+        public static void SetCookie(this HttpResponse response, string key, string value, int expireSeconds = 7)
         {
             var cookieOptions = new CookieOptions
             {
                 HttpOnly = true,
                 Secure = true,
                 SameSite = SameSiteMode.Strict,
-                Expires = DateTimeOffset.Now.AddDays(expireTime),
+                Expires = DateTimeOffset.Now.AddSeconds(expireSeconds),
 
             };
              
             response.Cookies.Append(key, value, cookieOptions);
         }
 
-        public static void SetCookie<T>(this HttpResponse response, string key, T value, int expireTime = 7)
+        public static void SetCookie<T>(this HttpResponse response, string key, T value, int expireSeconds = 7)
         {
             var cookieValue = Convert.ToString(value) ;
-            SetCookie(response, key, cookieValue, expireTime);
+            SetCookie(response, key, cookieValue, expireSeconds);
         }
 
         public static string GetCookie(this HttpRequest request, string key)
@@ -54,11 +54,11 @@ namespace Json_Article_Website.Helper
 
         #region Set Login Cookie
 
-        public static void SetLoginCookie(this HttpResponse response, LoginSession loginSession, int expireTime = 7)
+        public static void SetLoginCookie(this HttpResponse response, LoginSession loginSession, int expireSeconds = 7)
         {
             var bytes = JsonSerializer.SerializeToUtf8Bytes(loginSession);
             var cookieValue = Convert.ToBase64String(bytes);
-            SetCookie(response, CookieEnum.LoginSession.ToString(), cookieValue, expireTime);
+            SetCookie(response, CookieEnum.LoginSession.ToString(), cookieValue, expireSeconds);
         }
 
         public static LoginSession GetLoginCookie(this HttpRequest request)

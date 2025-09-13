@@ -22,5 +22,10 @@
         public int CommentsCount { get; set; } = 0;
         public int ReadingTime { get; set; } = 0;
 
+        public string Author { get; set; } = string.Empty;
+        public string Category { get; set; } = string.Empty;
+        public string Tags { get; set; } = string.Empty;
+        public string Summary { get; set; } = string.Empty;
+        
     }
 }

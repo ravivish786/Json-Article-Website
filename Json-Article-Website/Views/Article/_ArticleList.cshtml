@@ -4,7 +4,7 @@
 {
 	@foreach (var article in Model.Articles)
 	{
-		<a class="list-group-item list-group-item-action px-0 py-3"
+		<a class="list-group-item list-group-item-action px-0 py-3 bg-transparent"
 		   asp-action="Details"
 		   asp-route-id="@article.Id"
 		   asp-route-slug="@article.Slug">
@@ -28,7 +28,7 @@
 						</span>
 						<span class="article-read-time">
 							<span class="bi bi-clock-fill"></span>
-							<span>@article.ReadingTime min read</span>
+							<span>@article.ReadingTime.ToEstimatedReadTimeString()</span>
 						</span>
 					</span>
 				</span>

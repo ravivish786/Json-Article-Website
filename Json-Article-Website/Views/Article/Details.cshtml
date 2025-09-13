@@ -2,6 +2,20 @@
 @{
     ViewData["Title"] = Model.Title;
     var user = @Context.Request.GetLoginCookie();
+
+	Model.Summary = Model.Summary ?? "No summary available for this article.";
+
+}
+
+@section HeadContent {
+    <meta name="description" content="@Model.Summary">
+    <meta name="keywords" content="@Model.Keywords">
+    <meta name="author" content="@Model.Author">
+    <meta property="og:title" content="@Model.Title">
+    <meta property="og:description" content="@Model.Summary">
+    <meta property="og:image" content="@($"{Context.Request.Scheme}://{Context.Request.Host}{Model.ImageUrl}")" />
+
+    <meta property="og:url" content="@Url.Action("Details", "Article", new { id = Model.Id, slug = Model.Slug }, Context.Request.Scheme)">
 }
 
 <section class="d-flex justify-content-between  flex-column flex-lg-row gap-3">
@@ -60,7 +74,7 @@
                     </span>
                     <span class="article-read-time">
                         <span class="bi bi-clock-fill"></span>
-                        <span>@Model.ReadingTime min read</span>
+                        <span>@Model.ReadingTime.ToEstimatedReadTimeString()</span>
                     </span>
                 </p>
 

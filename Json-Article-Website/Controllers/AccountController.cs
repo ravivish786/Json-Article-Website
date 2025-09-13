@@ -39,7 +39,7 @@ namespace Json_Article_Website.Controllers
                         LoginTime = DateTime.Now
                     };
 
-                    CookieHelper.SetLoginCookie(Response, cookie, 7); // Set cookie for 7 days
+                    CookieHelper.SetLoginCookie(Response, cookie, 7*24*60*60); // Set cookie for 7 days
 
                     // Redirect to the return URL or home page
                     var adminPage = Url.Action("Index", "Admin");

@@ -18,8 +18,9 @@ html {
 }
 
 body {
-  margin-bottom: 60px;
-/*  font-family: cursive;*/
+    margin-bottom: 60px;
+    /*  font-family: cursive;*/
+    background-Image: linear-gradient(45deg, rgba(240,253,250,1) 0%, rgba(204,251,241,0.7) 30%, rgba(153,246,228,0.5) 60%, rgba(94,234,212,0.4) 100% ), radial-gradient(circle at 40% 30%, rgba(255,255,255,0.8) 0%, transparent 40%), radial-gradient(circle at 80% 70%, rgba(167,243,208,0.5) 0%, transparent 50%), radial-gradient(circle at 20% 80%, rgba(209,250,229,0.6) 0%, transparent 45%);
 }
 main a:hover h5 {
     text-decoration: underline !important;
@@ -74,3 +75,74 @@ header {
     header.scrolled {
         background-color: white; /* solid on scroll */
     }
+
+
+/* Article details css */
+
+.article-content a,
+.article-content u:has(a) {
+    text-decoration: none!important
+}
+    .article-content a:hover,
+    .article-content u a:hover {
+        text-decoration: underline!important;
+    }
+
+.article-content p {
+    margin: 1rem 0!important;
+}
+
+.article-content blockquote {
+    border-left: 4px solid #258cfb;
+    padding: 0.5rem 1rem;
+    margin: 1rem 0 ;
+    color: #555;
+    font-style: italic;
+    background-color: #f9f9f9;
+}
+    .article-content blockquote > * {
+        background-color: transparent !important;
+        color: inherit !important;
+
+    }
+
+.article-content ul,
+.article-content ol {
+    margin: 1rem 0;
+    padding-left: 2rem;
+}
+
+.article-content table:is(*) {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1rem 0;
+    background-color: #ffffff!important;
+}
+
+    .article-content tfoot {
+        font-weight: bold;
+        background-color: #f1f1f1;
+    }
+
+    .article-content table tbody {
+        background-color: #ffffff;
+    }
+
+    .article-content table tfoot {
+        background-color: #f1f1f1;
+    }
+
+.article-content table th,
+.article-content table td {
+    border: 1px solid #ddd;
+    padding: 0.5rem;
+    text-align: left;
+    background-color: #ffffff!important;
+}
+
+.article-content s {
+    text-decoration: line-through;
+    color: #888;
+}
+
+/* end */

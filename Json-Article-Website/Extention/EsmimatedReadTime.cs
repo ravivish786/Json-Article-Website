@@ -30,5 +30,17 @@ namespace Json_Article_Website.Extention
             int estimatedTime = (int)Math.Ceiling((double)wordCount / wordsPerMinute);
             return estimatedTime;
         }
+
+        public static string ToEstimatedReadTimeString(this int minutes)
+        {
+            if (minutes > 60)
+            {
+                int hours = minutes / 60;
+                int remainingMinutes = minutes % 60;
+                return remainingMinutes > 0 ? $"{hours}hr {remainingMinutes}min read" : $"{hours}hr read";
+            }
+
+            return $"{minutes}min read";
+        }
     }
 }

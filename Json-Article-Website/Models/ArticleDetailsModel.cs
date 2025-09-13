@@ -29,6 +29,6 @@ namespace Json_Article_Website.Models
         //    }
         //}
 
-         
+         public string Keywords { get; set; } = string.Empty;
     }
 }

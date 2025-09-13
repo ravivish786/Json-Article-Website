@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+﻿using System.Text;
+using System.Text.Json;
 using System.Web;
 using HtmlAgilityPack;
 using Json_Article_Website.Extention;
@@ -124,7 +125,9 @@ namespace Json_Article_Website.Service
             {
                 article.ImageUrl = imageGenerator.GenerateDefaultImage(article.Title, "Admin", "Linkker");
             }
-
+            //article.Likes += existingArticle?.Likes ?? 0;
+            //article.Views += existingArticle?.Views ?? 0;
+           
             article.ReadingTime = article.Content?.GetEstimatedReadTime() ?? 0;
 
             var bytes = JsonSerializer.SerializeToUtf8Bytes(article) ?? throw new ArgumentNullException(nameof(article), "Article cannot be null");
@@ -173,13 +176,14 @@ namespace Json_Article_Website.Service
         public async Task<ScrapeArticleModel> ScrapeArticleAsync(string url, CancellationToken cancellationToken)
         {
             var result = new ScrapeArticleModel();
-
+            var decodeUrl = HttpUtility.UrlDecode(url);
             try
             {
                 using var httpClient = new HttpClient();
                 httpClient.DefaultRequestHeaders.UserAgent.ParseAdd("Mozilla/5.0");
 
-                var html = await httpClient.GetStringAsync(HttpUtility.UrlDecode(url), cancellationToken);
+                
+                var html = await httpClient.GetStringAsync(decodeUrl, cancellationToken);
 
                 var htmlDoc = new HtmlDocument();
                 htmlDoc.LoadHtml(html);
@@ -199,7 +203,7 @@ namespace Json_Article_Website.Service
             catch (Exception ex)
             {
                 result = new ScrapeArticleModel();
-                _logger.LogError(ex, "Error scraping article from URL: {Url}", url);
+                _logger.LogError(ex, "Error scraping article from URL: {decodeUrl}", decodeUrl);
             }
 
             return result;
